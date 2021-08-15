@@ -28,7 +28,8 @@ ser.flushInput()
 ##    case = 
 ##    if arg == 
 
-current_device = api.setcurrent()
+def reducewhitespaces(str):
+    
 
 def get_data():
     try:
@@ -44,5 +45,8 @@ def get_data():
 
 while True:
     x = raw_input("" + ">>: ")
+
+    if x[0:3] == "set":
+        if x: 
     
         
