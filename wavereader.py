@@ -28,6 +28,8 @@ ser.flushInput()
 ##    case = 
 ##    if arg == 
 
+current_device = api.setcurrent()
+
 def get_data():
     try:
         ser_bytes = ser.readline()
@@ -41,6 +43,6 @@ def get_data():
         print("Keyboard interrupt called")
 
 while True:
-    x = raw_input("Enter any number")
-    switch(x)
+    x = raw_input("" + ">>: ")
+    
         
