@@ -21,32 +21,52 @@ import serial
 import time
 import csv
 
-ser = serial.Serial('COM5')
-ser.flushInput()
-
 ##def switch(arg):
 ##    case = 
 ##    if arg == 
 
-def reducewhitespaces(str):
+#def interpreter(str):
+    #if()
     
-
-def get_data():
+#def set_dev(var0):
+    
+def initt(port, baud = 9600, bytesize = 8, timeout = 5, stopbits = 1, parity = "even"):
     try:
-        ser_bytes = ser.readline()
-        decoded_bytes = float(ser_bytes[0:len(ser_bytes)-2].decode("utf-8"))
-        print(decoded_bytes)
-        with open("DSO138_data_" + str(time.time()) + ".csv","a") as f:
-            writer = csv.writer(f,delimiter=", ")
-            writer.writerow([time.time(), decoded_bytes])
+        if stopbits == 0 or stopbits > 2:
+            raise Exception("Error in function call initt(" + port + str(baud) + str(bytesize) + str(timeout) + str(stopbits) + str(parity) + ")\nArgument stopbits must be either 1 (one) or 2 (two)")
+            
+        else:
+            ser = serial.Serial(port = port, baudrate = baud, bytesize = bytesize, timeout = timeout, stopbits = serial.STOPBITS_ONE if stopbits == 1 else serial.STOPBITS_TWO)
+            return ser
+    except:
+        print("Exiting initt()")
+
+
+def get_data(open_port,var0=None):
+    try:
+        if open_port.in_waiting > 0:
+            
+            open_port.flushInput()
+            ser_data = open_port.readline()
+            print(ser_data)
+
+            #decoded_data = float(ser_data[0:len(ser_data)-2].decode("utf-8"))
+            #print(decoded_data)
+
+            with open("DSO138_data_" + str(time.time()) + ".csv","a") as f:
+                writer = csv.writer(f,delimiter=", ")
+                writer.writerow([time.time(), decoded_bytes])
 
     except:
-        print("Keyboard interrupt called")
+        print("Exiting get_data()")
+        
 
 while True:
-    x = raw_input("" + ">>: ")
+    myport = initt("COM7", 115200)
+    try:
+        get_data(myport)
 
-    if x[0:3] == "set":
-        if x: 
-    
-        
+    except:
+        print("Keyboard interrupt")
+        break
+    ##x = raw_input("" + ">>: ")
