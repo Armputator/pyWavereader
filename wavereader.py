@@ -1,6 +1,6 @@
 #written on python version 3.7.6
 #written by Ampy
-#last revision: 2021-Aug-09
+#last revision: 2021-Aug-17
 
 #Writing to Serial Port in Powershell
 
@@ -32,7 +32,7 @@ startup = False
 
 #---------------------------------------------------FUNCTIONS---------------------------------------------------#
     
-def _init(port, baud = 9600, bytesize = 8, timeout = 5, stopbits = 1, parity = 'none'):
+def init(port, baud = 9600, bytesize = 8, timeout = 5, stopbits = 1, parity = 'none'):
     try:
         if stopbits == 0 or stopbits > 2:
             raise Exception("Error in function call _init(" + port + str(baud) + str(bytesize) + str(timeout) + str(stopbits) + str(parity) + ")\nArgument stopbits must be either 1 (one) or 2 (two)")
@@ -52,9 +52,10 @@ def _init(port, baud = 9600, bytesize = 8, timeout = 5, stopbits = 1, parity = '
 
                 if found:
                     #return serial.Serial(port = port, baudrate = baud, bytesize = bytesize, timeout = timeout, stopbits = serial.STOPBITS_ONE if stopbits == 1 else serial.STOPBITS_TWO)
-                    myPort.port = port
                     myPort.baudrate = baud
-                    myPort.open()
+                    myPort.port = port
+                    if myPort.is_open == False:
+                        myPort.open()
                     return
 
                 raise Exception("COM Port " + port + " not available. Call show_ports() to see full list of ports")    
@@ -79,6 +80,9 @@ def show_ports():
     for p in ports:
         print(p)
 
+def exit():
+    myPort.close()
+    exit()
 
 def get_data():
         decoded_list = []
@@ -94,11 +98,10 @@ def get_data():
             for line in decoded_list:        
                 writer = csv.writer(target_file,delimiter=' ')
                 writer.writerow(line)
-
         
-#---------------------------------------------------DEVICE LIST---------------------------------------------------#
+#---------------------------------------------------COMMANDS_DICTIONARY---------------------------------------------------#
 
-#All_Devices = {"DSO138mini" : api.device("DSO138mini", 'COM5', 115200),}
+cmnd_interpreter = {'get data' : get_data, 'exit' : exit}
 
 #---------------------------------------------------RUNTIME---------------------------------------------------#
 
@@ -108,22 +111,20 @@ if False:
         myPort_data = myPort.readline()
         print(myPort_data.decode("Ascii"))
 
-Run = True
 while True:
     if startup == False:
-        #_init('COM5', 115200)
-        myPort = serial.Serial('COM5', 115200)
+        #init('COM5', 115200)
+        myPort.port = 'COM5'
+        myPort.baudrate = 115200
+        myPort.open()
+        #myPort = serial.Serial('COM5', 115200)
         startup = True
     
     min_lines = 1024+17
 
     try:
-        command = input( str(myPort.port) + ">>")
-        if command == "get data":
-            print("Ready for data")
-            get_data()
-
-        Run = False
+        command = input( str(myPort.port) + " >$ ")
+        cmnd_interpreter[command]()
 
     except:
         print("Keyboard interrupt")
