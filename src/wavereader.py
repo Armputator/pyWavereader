@@ -17,7 +17,6 @@
 #PS> $port.ReadLine()
 
 import api
-import man
 import re
 import serial
 import serial.tools.list_ports as port_list
@@ -38,7 +37,8 @@ decoded_list = list()
 #---------------------------------------------------FUNCTIONS---------------------------------------------------#
 
 def exit():
-    myPort.close()
+    for p in all_ports:
+        p.close()
     exit()
 
 #empty dict declaration because i am getting annoyed at vscode syntax parsing saying it doesnt recognise
@@ -49,25 +49,25 @@ def input_interpreter(input):
     return base_cmnds[(cmdstr[0])](cmdstr[1::])
 
 def _init(args):
-    print("Hooray!")
+    
     if args[0] == "-help":
-        print(man._init())
+        print("placeholder for man page")
     #return serial.Serial(port = port, baudrate = baud, bytesize = bytesize, timeout = timeout, stopbits = serial.STOPBITS_ONE if stopbits == 1 else serial.STOPBITS_TWO)
-    myPort.port = re.findall("-p",args)
-    myPort.baudrate = re.findall("-r",args)
-    #myPort.bytes = 
-    if myPort.is_open == False:
-        myPort.open()
+    all_ports.append(serial.Serial(port = str((re.findall("-p=",args))[2::]), baudrate = int((re.findall("-r=",args))[2::])))
+    all_interfaces[str((re.findall("-i=",args))[2::])] = all_ports[-1]
+    
+    #myPort.port = str((re.findall("-p",args))[2::])
+    #myPort.baudrate = int((re.findall("-r",args))[2::])
+    
+    #if myPort.is_open == False:
+    #    myPort.open()
 
 def load(args): #NOT FINISHED
     return _init()
 
-def close(port):
+def close(interface):
     try:
-        if myPort.port == port and myPort.is_open == True:
-            myPort.close()
-        else:
-            raise Exception("Target Port is not the current open port")
+        all_interfaces[interface]
 
     except:
         print("Exiting close()")
