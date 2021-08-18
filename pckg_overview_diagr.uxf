@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>340</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>init()
+-
+input:
+&gt; port
+&gt; baudrate
+-
+functionality:
+opens COM port wiht specified 
+baudrate
+-
+return:
+none</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>100</x>
+      <y>20</y>
+      <w>1290</w>
+      <h>930</h>
+    </coordinates>
+    <panel_attributes>wavereader.py
+--
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>340</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>close()
+-
+input:
+&gt;port
+-
+functionality:
+closes port
+-
+return: 
+none</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>80</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>exit()
+-
+input:
+none
+-
+functionality
+closes all open ports and executes python exit() command
+-
+return:
+none</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>610</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>show_ports()
+-
+input:
+none
+-
+functionality:
+lists all ports, prints to interpreter
+window
+-
+return:
+none</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>120</x>
+      <y>50</y>
+      <w>870</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>Runtime Control
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>120</x>
+      <y>300</y>
+      <w>870</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>Serial Control
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>120</x>
+      <y>570</y>
+      <w>870</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>Serial Actions
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>610</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>get_data()
+-
+input:
+none
+-
+functionality
+reads min_lines amount of lines
+saves lines to csv
+filename is datetime of read
+operation finish
+-
+return: 
+none</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

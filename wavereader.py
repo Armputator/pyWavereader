@@ -33,35 +33,28 @@ startup = False
 #---------------------------------------------------FUNCTIONS---------------------------------------------------#
     
 def init(port, baud = 9600, bytesize = 8, timeout = 5, stopbits = 1, parity = 'none'):
-    try:
-        if stopbits == 0 or stopbits > 2:
-            raise Exception("Error in function call _init(" + port + str(baud) + str(bytesize) + str(timeout) + str(stopbits) + str(parity) + ")\nArgument stopbits must be either 1 (one) or 2 (two)")
-            
-        else:
-            ports = list(port_list.comports())
-            i = 0
-            found = False
-            for p in ports:
-                i+=1    
-                print( str(i) + " >> " + str(p)[0:4])
 
-                if str(p)[0:4] == port:
-                    print("COM Port found! Opening port " + port)
-                    found = True
-                    break
+        ports = list(port_list.comports())
+        i = 0
+        found = False
+        for p in ports:
+            i+=1    
+            print( str(i) + " >> " + str(p)[0:4])
 
-                if found:
-                    #return serial.Serial(port = port, baudrate = baud, bytesize = bytesize, timeout = timeout, stopbits = serial.STOPBITS_ONE if stopbits == 1 else serial.STOPBITS_TWO)
-                    myPort.baudrate = baud
-                    myPort.port = port
-                    if myPort.is_open == False:
-                        myPort.open()
-                    return
+            if str(p)[0:4] == port:
+                print("COM Port found! Opening port " + port)
+                found = True
+                break
 
-                raise Exception("COM Port " + port + " not available. Call show_ports() to see full list of ports")    
+        if True:
+            #return serial.Serial(port = port, baudrate = baud, bytesize = bytesize, timeout = timeout, stopbits = serial.STOPBITS_ONE if stopbits == 1 else serial.STOPBITS_TWO)
+            myPort.baudrate = baud
+            myPort.port = port
+            if myPort.is_open == False:
+                myPort.open()
+            return
 
-    except:
-        print("Exiting _init()")
+        raise Exception("COM Port " + port + " not available. Call show_ports() to see full list of ports")    
 
 
 def close(port):
@@ -101,7 +94,12 @@ def get_data():
         
 #---------------------------------------------------COMMANDS_DICTIONARY---------------------------------------------------#
 
-cmnd_interpreter = {'get data' : get_data, 'exit' : exit}
+cmnd_interpreter = {
+    'show ports' : show_ports,
+    'get data' : get_data, 
+    'close' : close,
+    'exit' : exit,
+    }
 
 #---------------------------------------------------RUNTIME---------------------------------------------------#
 
