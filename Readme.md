@@ -17,7 +17,7 @@ Factory settings are as follows:
 pyWavereader has been developed on Windows 10, Microsoft Visual Studio Code to be executed on Python version 3.7.6 interpreter or higher.
 During development it has been tested with the DSO138mini, running on Firmware 113-13816-111, connected to a CH340 usb-ttl converter on COM5
 
-## Features
+## **Features**
 
 - Import a HTML file and watch it magically convert to Markdown
 - Drag and drop images (requires your Dropbox account be linked)
@@ -41,25 +41,50 @@ This text you see here is *actually- written in Markdown! To get a feel
 for Markdown's syntax, type some text into the left window and
 watch the results in the right.
 
-## Commands 
+## **Commands** 
 
-Dillinger uses a number of open source projects to work properly:
+### Runtime Control
 
-- [AngularJS] - HTML enhanced for web apps!
-- [Ace Editor] - awesome web-based text editor
-- [markdown-it] - Markdown parser done right. Fast and easy to extend.
-- [Twitter Bootstrap] - great UI boilerplate for modern web apps
-- [node.js] - evented I/O for the backend
-- [Express] - fast node.js network app framework [@tjholowaychuk]
-- [Gulp] - the streaming build system
-- [Breakdance](https://breakdance.github.io/breakdance/) - HTML
-to Markdown converter
-- [jQuery] - duh
+exit()
 
-And of course Dillinger itself is open source with a [public repository][dill]
- on GitHub.
+### Serial Control
 
-## Installation
+*init - initializes COM port as Interface during the current runtime*
+SYNOPSIS
+: init [OPTIONS]
+
+DESCRIPTION
+: initializes serial port with an interface name adressable by user
+
+mandatory arguments are
+
+-i=[INTERFACE]
+-p=[PORT]
+-r=[BAUDRATE]
+
+optional arguments are
+-b=[BYTESIZE], default value is 8 (eight)
+-a=[PARITY], default is none
+-s=[STOPBITS], default is 1 (one)
+
+EXAMPLES
+: init -i=MyPort -p=COM5 -r=115200
+
+*close - closes interface*
+SYNOPSIS
+: close [INTERFACE] [PORT]
+
+DESCRIPTION
+: closes serial port via either port or interface name
+
+first argument must either be interface name or port name following the -p option
+-p=[PORT]
+
+EXAMPLES
+: close MyPort
+  close -p=COM5
+
+## **Installation**
 
 Dillinger requires [Node.js](https://nodejs.org/) v10+ to run.
 
@@ -78,7 +103,7 @@ npm install --production
 NODE_ENV=production node app
 ```
 
-## Programming Interface
+## **Programming Interface**
 
 Dillinger is currently extended with the following plugins.
 Instructions on how to use them in your own application are linked below.
