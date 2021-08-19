@@ -36,7 +36,7 @@ decoded_list = list()
 
 #---------------------------------------------------FUNCTIONS---------------------------------------------------#
 
-def exit():
+def exit(args):
     for p in all_ports:
         p.close()
     exit()
@@ -73,10 +73,15 @@ def close(interface):
         print("Exiting close()")
 
 
-def show_ports():
-    ports = list(port_list.comports())
-    for p in ports:
-        print(p)
+def show_ports(args):
+    if re.findall("-p", args):
+        ports = list(port_list.comports())
+        for p in ports:
+            print(p)
+        
+    if re.findall("-c", args):
+        for i in all_interfaces.keys:
+            print( ("Open" if str((all_interfaces[i]).is_open()) else "Closed") +  " >> " + str(i))
 
 
 def get_data():
