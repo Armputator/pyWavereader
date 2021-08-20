@@ -1,35 +1,23 @@
 #written on python version 3.7.6
 #written by Ampy
-#last revision: 2021-Aug-17
+#last revision: 2021-Aug-20
 
-#Writing to Serial Port in Powershell
-
-#PS> [System.IO.Ports.SerialPort]::getportnames()
-#PS> $port= new-Object System.IO.Ports.SerialPort COM3,9600,None,8,one
-#PS> $port.open()
-#PS> $port.WriteLine("Hello world")
-#PS> $port.Close()
-
-#Reading from a Serial Port in Powershell
-
-#PS> $port= new-Object System.IO.Ports.SerialPort COM3,9600,None,8,one
-#PS> $port.Open()
-#PS> $port.ReadLine()
-
-import api
 import re
 import serial
 import serial.tools.list_ports as port_list
 import time
 import csv
+import json
+
 #---------------------------------------------------GLOBAL VARIABLES---------------------------------------------------#
 
-all_ports = list()
-all_interfaces = dict()
-myPort = serial.Serial()
-min_lines = 0
-startup = False
-decoded_list = list()
+all_ports = list()  #List of all ports
+all_interfaces = dict() #Dictionary connecting Interface names as String to respective entry in all_ports
+myPort = serial.Serial() #empty default port
+min_lines = 1 #default amount of minimum lines
+startup = False #variable for runtime starting process
+raw_list = list() #lsit for saving raw serial data
+decoded_list = list() #list for saving serial data
 
 #---------------------------------------------------CLASSES---------------------------------------------------#
 
@@ -46,6 +34,11 @@ base_cmnds = dict()
 def input_interpreter(input):
     cmdstr = re.split("\s+\-", input)
 
+    for c in cmdstr:
+        for d in cmdstr:
+            if c[0:2] == d[0:2]:
+                raise Exception("Cannot have multiple instances of the same option")
+    
     return base_cmnds[(cmdstr[0])](cmdstr[1::])
 
 def _init(args):
@@ -84,17 +77,25 @@ def show_ports(args):
             print( ("Open" if str((all_interfaces[i]).is_open()) else "Closed") +  " >> " + str(i))
 
 
-def get_data():
-        print("Waiting for data")
-        for i in range(min_lines):
-            myPort_data = myPort.readline()
-            decoded_data = myPort_data.decode("Ascii")
+def get_data(args):
+        lines = 0
+        #print("Waiting for data")
+        if re.findall("-l=",args):
+            lines = ((re.findall("-l=",args))[0])[3::]
+        else:
+            lines = min_lines
 
+        for i in range(lines):
+            myPort_data = myPort.readline()
+            raw_list.append(myPort_data)
+
+        for i in range(lines):
+            decoded_data = myPort_data.decode("Ascii")
             decoded_list.append(decoded_data)
             #print(decoded_data)
+    
 
-
-def save_data():
+def save_data(args):
         with open("DSO138_data_" + str(time.time()) + ".csv","a") as target_file:
             for line in decoded_list:        
                 writer = csv.writer(target_file,delimiter=' ')

@@ -41,11 +41,18 @@ This text you see here is *actually- written in Markdown! To get a feel
 for Markdown's syntax, type some text into the left window and
 watch the results in the right.
 
-## **Commands** 
+## **Commands**
 
 ### Runtime Control
 
-exit()
+*exit - closes all ports and quits runtime*
+SYNOPSIS
+: exit
+
+DESCRIPTION
+: closes all ports in list all_ports before quitting python runtime, returns user to original terminal
+
+takes no arguments
 
 ### Serial Control
 
