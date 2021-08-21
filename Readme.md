@@ -43,6 +43,14 @@ watch the results in the right.
 
 ## **Commands**
 
+Most commands take multiple arguments, but not multiple instances of the same option
+Options must be introduced with a dash "-", predecessed by one or more whitespace(s)
+Every option consists of one standard american alphabet letter
+If an option can set a parameter, the argument must be appended to the option letter with an equal sign "=" and then the argument
+
+EXAMPLE
+: init i=myName p=COM1 r=9600
+
 ### Runtime Control
 
 *exit - closes all ports and quits runtime*
@@ -53,6 +61,20 @@ DESCRIPTION
 : closes all ports in list all_ports before quitting python runtime, returns user to original terminal
 
 takes no arguments
+
+*help - returns man page for a given command*
+SYNOPSIS
+: help [COMMAND]
+
+DESCRIPTION
+: prints the man page about the command(s) given as argument or if -a option is given prints all possible commands
+
+-a, prints all commands, function call ignores all other argument if this is given
+
+EXAMPLES
+: help -init
+ help -a -init
+ second function call will ignore the -init argument
 
 ### Serial Control
 
