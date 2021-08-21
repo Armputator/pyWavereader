@@ -4,6 +4,7 @@
 
 import re
 import serial
+from serial.serialutil import STOPBITS_ONE
 import serial.tools.list_ports as port_list
 import time
 import csv
@@ -14,6 +15,7 @@ import json
 myPort = serial.Serial() #empty default port
 all_ports = list()  #List of all ports
 all_interfaces = {"myPort" : myPort} #Dictionary connecting Interface names as String to respective entry in all_ports
+line_interface = {"myPort" : 1}
 
 min_lines = 1 #default amount of minimum lines
 startup = False #variable for runtime starting process
@@ -63,11 +65,21 @@ def input_interpreter(input):
     #---------------------------------------------------SERIAL CONTROL---------------------------------------------------#
 
 def _init(args):
-    
+    #template
     #return serial.Serial(port = port, baudrate = baud, bytesize = bytesize, timeout = timeout, stopbits = serial.STOPBITS_ONE if stopbits == 1 else serial.STOPBITS_TWO)
     
     #print(((re.findall("\-r=\S*",args)))) #debug
-    all_ports.append( serial.Serial( port = str(((re.findall("\-p=\S*",args))[0])[3::]) , baudrate = int(((re.findall("\-r=\S*",args))[0])[3::]) ) )
+    all_ports.append( 
+        serial.Serial( 
+            port = str(((re.findall("\-p=\S*",args))[0])[3::]),
+            baudrate = int(((re.findall("\-r=\S*",args))[0])[3::]),
+            #bytesize = (re.findall("\-b=\S*", args)[0])[3::] if re.findall("\-b=\S*", args) else 8,
+            #timeout = int((re.findall("\-t=\S*", args)[0])[3::]) if re.findall("\-t=\S*", args) else 1,
+        )
+    )
+
+    if re.findall("\s+\-l=\S*",args):
+        line_interface[(re.findall("\-i=\S*",args)[0])[3::]] = int((re.findall("\-l=\S*",args)[0])[3::])
     
     #print((re.findall("\-i=\S*",args))[3::]) #debug
     all_interfaces[(re.findall("\-i=\S*",args)[0])[3::]] = all_ports[-1] #append interfaces list with interface name and assigned serial port
@@ -85,9 +97,10 @@ def set_port(args):
 
 
 def close(args=None):
-    for p in re.findall("\s+"):
+    for p in re.findall("\s+\-"):
         if all_interfaces[p].is_open:
             all_interfaces[p].close()
+
 
 def show_ports(args):
     if re.findall("\-p", args):
@@ -108,26 +121,38 @@ def show_ports(args):
 
 
 def get_data(args):
-        lines = 0
         #print("Waiting for data")
-        if re.findall("l=",args):
-            lines = ((re.findall("l=",args))[0])[3::]
+        raw_list.clear()
+        decoded_list.clear()
+        lines = 0
+
+        if re.findall("\-i=\S*",args):
+            tempport = all_interfaces[ (re.findall("\-i=\S*",args)[0])[3::] ]
+            lines = line_interface[ (re.findall("\-i=\S*",args)[0])[3::] ]
         else:
+            tempport = all_interfaces["myPort"]
             lines = min_lines
 
-        for i in range(lines):
-            myPort_data = myPort.readline()
-            raw_list.append(myPort_data)
+        if re.findall("\-l=\S*",args):
+            lines = int(((re.findall("\-l=\S*",args))[0])[3::])
+
+        print(lines)
 
         for i in range(lines):
-            decoded_data = myPort_data.decode("Ascii")
+            _data = tempport.readline()
+            raw_list.append(_data)
+
+        for i in raw_list:
+            decoded_data = i.decode("Ascii")
             decoded_list.append(decoded_data)
             #print(decoded_data)
+            
+        #print(decoded_list)
     
 
-def save_data(args):
+def save_data(args=None):
         with open("DSO138_data_" + str(time.time()) + ".csv","a") as target_file:
-            for line in decoded_list:        
+            for line in decoded_list:
                 writer = csv.writer(target_file,delimiter=' ')
                 writer.writerow(line)
         
