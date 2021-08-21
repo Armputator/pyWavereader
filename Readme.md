@@ -2,7 +2,7 @@
 ## Python based Waveform reader tool for the DSO138mini 1-channel oscilloscope
 
 [![Build Status]]()
-Last Revision: 2021-Aug-18
+Last Revision: 2021-Aug-21
 
 Written by D.Hainsch / Ampy 
 
@@ -52,7 +52,7 @@ DESCRIPTION
 
 EXAMPLES
 : help -init
- help -a -init
+ help -a
  second function call will ignore the -init argument
 
 ### Serial Control
@@ -63,12 +63,14 @@ SYNOPSIS
 
 DESCRIPTION
 : initializes serial port with an interface name adressable by user
+adds entry for how many lines must be read when reading from this com port
 
 mandatory arguments are
 
 -i=[INTERFACE]
 -p=[PORT]
 -r=[BAUDRATE]
+-l=[LINES]
 
 optional arguments are
 -b=[BYTESIZE], default value is 8 (eight)
@@ -76,21 +78,73 @@ optional arguments are
 -s=[STOPBITS], default is 1 (one)
 
 EXAMPLES
-: init -i=MyPort -p=COM5 -r=115200
+: init -i=MyPort -p=COM5 -r=115200 -l=1041 STANDARD FOR DSO138mini
 
 *close - closes interface*
 SYNOPSIS
-: close [INTERFACE] [PORT]
+: close -i=[INTERFACE]
 
 DESCRIPTION
-: closes serial port via either port or interface name
-
-first argument must either be interface name or port name following the -p option
--p=[PORT]
+: closes serial port via interface name
 
 EXAMPLES
-: close MyPort
-  close -p=COM5
+: close -i=MyPort
+
+*set_port - sets interface as current working port*
+SYNOPSIS
+: set_port -i=[INTERFACE]
+
+DESCRIPTION
+: sets serial port assigned to interface name as current communication port. becomes standard for all Serial Communication Commands
+also sets the lines value for read operation
+
+EXAMPLES
+: set_port -i=MyPort
+
+*show_ports - shows currently detectable ports*
+SYNOPSIS
+: show_ports [OPTIONS]
+
+DESCRIPTION
+: shows ports detectable by runtime
+
+-p, shows all ports connected to system
+-i, shows all interfaces
+-c, shows all initilized ports as saved in all_ports list
+-m, shows current standard port
+
+### Serial Communication
+
+*get_data - reads n number of lines from a previously initialized serial port*
+SYNOPSIS
+: get_data [OPTIONS]
+
+DESCRIPTION
+: reads n amount of lines from a serial port. Standard serial port is the empty default port, with default line value of 1 (one).
+If set_port has been called, get_data reads from the new standard interface with the selected amount of lines. If no amount of lines is assigned to interface, reads default 1 (one) line
+
+
+-i=[INTERFACE]
+-l=[LINES], including the argument will override the line value assigned to i or current standard port
+
+EXAMPLES
+: get_data, reads from current standard port
+get_data -i=MyPort, reads 1041 lines from MyPort (see init examples)
+get_data -i=MyPort -l=2, reads 2 lines from MyPort
+
+### Data Commands
+
+*save_data - saves data to csv file* Still in building
+SYNOPSIS
+: save_data
+
+DESCRIPTION
+: saves serial data in a csv file in the included savedata folder. Filename built from timestamp and Device name (Currently only DO138mini,  future support for more devices in planning)
+
+takes no arguments
+
+EXAMPLES
+: save_data
 
 ## **Installation**
 

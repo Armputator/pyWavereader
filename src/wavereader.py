@@ -1,6 +1,6 @@
 #written on python version 3.7.6
 #written by Ampy
-#last revision: 2021-Aug-20
+#last revision: 2021-Aug-21
 
 import re
 import serial
@@ -60,7 +60,10 @@ def input_interpreter(input):
         if len(re.findall(c[0:3:],options)) > 2:
             raise Exception("Cannot have multiple instances of the same option" + str(re.findall(c,options)))
     
-    return (base_cmnds[(cmdlist[0])])(options) #calls command and gives options as single string with each option seperated with one whitespace
+    try:
+        return (base_cmnds[(cmdlist[0])])(options) #calls command and gives options as single string with each option seperated with one whitespace
+    except:
+        print("Command " + str(cmdlist[0]) + " could not be found")
 
     #---------------------------------------------------SERIAL CONTROL---------------------------------------------------#
 
@@ -92,6 +95,7 @@ def load(args): #NOT FINISHED
 def set_port(args):
     if re.findall("\-i=\S*",args):
        all_interfaces["myPort"] = all_interfaces[ ((re.findall("\-i=\S*",args))[0])[3::] ]
+       line_interface["myPort"] = line_interface[ ((re.findall("\-i=\S*",args))[0])[3::] ]
     else:
         raise Exception("No port or inteface was given. Please name a Serial connection to set as default")
 
@@ -131,7 +135,7 @@ def get_data(args):
             lines = line_interface[ (re.findall("\-i=\S*",args)[0])[3::] ]
         else:
             tempport = all_interfaces["myPort"]
-            lines = min_lines
+            lines = line_interface["myPort"]
 
         if re.findall("\-l=\S*",args):
             lines = int(((re.findall("\-l=\S*",args))[0])[3::])
@@ -160,8 +164,8 @@ def save_data(args=None):
 
 cmnd_interpreter = {
     'exit' : exit,
-    'init' : _init, 
     'help' : help,
+    'init' : _init, 
     'load' : load,
     'set_port' : set_port,
     'close' : close,
