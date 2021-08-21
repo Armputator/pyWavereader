@@ -151,7 +151,7 @@ def get_data(args):
     
 
 def save_data(args=None):
-        with open("DSO138_data_" + str(time.time()) + ".csv","a") as target_file:
+        with open("savedata\\DSO138_data_" + str(time.time()) + ".csv","a") as target_file:
             for line in decoded_list:
                 writer = csv.writer(target_file,delimiter=' ')
                 writer.writerow(line)
