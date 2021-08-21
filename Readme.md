@@ -28,7 +28,7 @@ Every option consists of one standard american alphabet letter
 If an option can set a parameter, the argument must be appended to the option letter with an equal sign "=" and then the argument
 
 EXAMPLE
-: init i=myName p=COM1 r=9600
+: init -i=myName -p=COM1 -r=9600
 
 ### Runtime Control
 
