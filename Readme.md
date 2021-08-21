@@ -32,14 +32,17 @@ EXAMPLE
 
 ### Runtime Control
 
-*exit - closes all ports and quits runtime*
+*leave - closes all ports and quits runtime*
 SYNOPSIS
-: exit
+: leave
 
 DESCRIPTION
 : closes all ports in list all_ports before quitting python runtime, returns user to original terminal
 
 takes no arguments
+
+EXAMPLES
+: leave
 
 *help - returns man page for a given command*
 SYNOPSIS

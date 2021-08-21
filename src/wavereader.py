@@ -29,14 +29,37 @@ decoded_list = list() #list for saving serial data
 #---------------------------------------------------FUNCTIONS---------------------------------------------------#
 
     #---------------------------------------------------RUNTIME CONTROL---------------------------------------------------#
-def exit(args = None):
+#empty dict declaration because i am getting annoyed at vscode syntax parsing saying it doesnt recognise
+base_cmnds = dict()
+
+def input_interpreter(input):
+    cmdlist = re.split("\s+\-", input) ##separates command from options, treats multiple whitespaces as one#if a option argument and its equal sign is separated from otion letter by whitespaces it will be misinterpreted
+    options = str()
+    #print("dissected input= ") #debug
+    #print(cmdlist) #debug
+    for c in cmdlist[1::]:
+        options += '-' + c + ' '
+    #print("extracted options= " + options) #debug
+
+    for c in cmdlist:
+        if len(re.findall(c[0:3:],options)) > 2:
+            raise Exception("Cannot have multiple instances of the same option" + str(re.findall(c,options)))
+    
+    if cmdlist[0] == "leave":
+        leave()
+    else:
+        try:
+            return (base_cmnds[(cmdlist[0])])(options) #calls command and gives options as single string with each option seperated with one whitespace
+        except:
+            print("Command " + str(cmdlist[0]) + " could not be found")
+
+
+def leave(args=None):
     for p in all_ports:
         if p.is_open == True:
             p.close()
     quit()
 
-#empty dict declaration because i am getting annoyed at vscode syntax parsing saying it doesnt recognise
-base_cmnds = dict()
 
 def help(args):
     if re.findall("\-a",args):
@@ -46,24 +69,6 @@ def help(args):
         for a in args[:-1:]:
             print("no man pages available yet") #print man page of command
     
-
-def input_interpreter(input):
-    cmdlist = re.split("\s+\-", input) ##separates command from options, treats multiple whitespaces as one#if a option argument and its equal sign is separated from otion letter by whitespaces it will be misinterpreted
-    options = str()
-    print("dissected input= ")
-    print(cmdlist)
-    for c in cmdlist[1::]:
-        options += '-' + c + ' '
-    print("extracted options= " + options)
-
-    for c in cmdlist:
-        if len(re.findall(c[0:3:],options)) > 2:
-            raise Exception("Cannot have multiple instances of the same option" + str(re.findall(c,options)))
-    
-    try:
-        return (base_cmnds[(cmdlist[0])])(options) #calls command and gives options as single string with each option seperated with one whitespace
-    except:
-        print("Command " + str(cmdlist[0]) + " could not be found")
 
     #---------------------------------------------------SERIAL CONTROL---------------------------------------------------#
 
@@ -163,7 +168,7 @@ def save_data(args=None):
 #---------------------------------------------------COMMANDS_DICTIONARY---------------------------------------------------#
 
 cmnd_interpreter = {
-    'exit' : exit,
+    'leave' : leave,
     'help' : help,
     'init' : _init, 
     'load' : load,
