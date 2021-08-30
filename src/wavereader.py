@@ -144,7 +144,7 @@ def get_data(args):
         if re.findall("\-l=\S+",args):
             lines = int(((re.findall("\-l=\S+",args))[0])[3::])
 
-        print(lines)
+        print("Reading " + str(lines) + "lines")
 
         for i in range(lines):
             _data = tempport.readline()
