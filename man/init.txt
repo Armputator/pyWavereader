@@ -1,0 +1,22 @@
+*init - initializes COM port as Interface during the current runtime*
+
+SYNOPSIS
+: init [OPTIONS]
+
+DESCRIPTION
+: initializes serial port with an interface name adressable by user
+adds entry for how many lines must be read when reading from this com port
+mandatory arguments are
+
+-i=[INTERFACE]
+-p=[PORT]
+-r=[BAUDRATE]
+-l=[LINES]
+
+optional arguments are
+-b=[BYTESIZE], default value is 8 (eight)
+-a=[PARITY], default is none
+-s=[STOPBITS], default is 1 (one)
+
+EXAMPLES 
+: `init -i=MyPort -p=COM5 -r=115200 -l=1041 (STANDARD FOR DSO138mini)`
