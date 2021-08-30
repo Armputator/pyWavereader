@@ -25,18 +25,40 @@ decoded_list = list() #list for saving serial data
 
 #---------------------------------------------------CLASSES---------------------------------------------------#
 
-
 #---------------------------------------------------FUNCTIONS---------------------------------------------------#
 
     #---------------------------------------------------RUNTIME CONTROL---------------------------------------------------#
-def exit(args = None):
+#empty dict declaration because i am getting annoyed at vscode syntax parsing saying it doesnt recognise
+base_cmnds = dict()
+
+def input_interpreter(input):
+    cmdlist = re.findall("\s+\-\S+", input) ##separates command from options, treats multiple whitespaces as one#if a option argument and its equal sign is separated from otion letter by whitespaces it will be misinterpreted
+    options = str()
+    #print("dissected input= ") #debug
+    #print(cmdlist) #debug
+    for c in cmdlist[1::]:
+        options += c + ' '
+    #print("extracted options= " + options) #debug
+
+    for c in cmdlist:
+        if len(re.findall(c[0:3:],options)) > 2:
+            raise Exception("Cannot have multiple instances of the same option" + str(re.findall(c,options)))
+    
+    if cmdlist[0] == "leave":
+        leave()
+    else:
+        try:
+            return (base_cmnds[(cmdlist[0])])(options) #calls command and gives options as single string with each option seperated with one whitespace
+        except:
+            print("Command " + str(cmdlist[0]) + " could not be found")
+
+
+def leave(args=None):
     for p in all_ports:
         if p.is_open == True:
             p.close()
     quit()
 
-#empty dict declaration because i am getting annoyed at vscode syntax parsing saying it doesnt recognise
-base_cmnds = dict()
 
 def help(args):
     if re.findall("\-a",args):
@@ -47,24 +69,6 @@ def help(args):
             print("no man pages available yet") #print man page of command
     
 
-def input_interpreter(input):
-    cmdlist = re.split("\s+\-", input) ##separates command from options, treats multiple whitespaces as one#if a option argument and its equal sign is separated from otion letter by whitespaces it will be misinterpreted
-    options = str()
-    print("dissected input= ")
-    print(cmdlist)
-    for c in cmdlist[1::]:
-        options += '-' + c + ' '
-    print("extracted options= " + options)
-
-    for c in cmdlist:
-        if len(re.findall(c[0:3:],options)) > 2:
-            raise Exception("Cannot have multiple instances of the same option" + str(re.findall(c,options)))
-    
-    try:
-        return (base_cmnds[(cmdlist[0])])(options) #calls command and gives options as single string with each option seperated with one whitespace
-    except:
-        print("Command " + str(cmdlist[0]) + " could not be found")
-
     #---------------------------------------------------SERIAL CONTROL---------------------------------------------------#
 
 def _init(args):
@@ -74,18 +78,18 @@ def _init(args):
     #print(((re.findall("\-r=\S*",args)))) #debug
     all_ports.append( 
         serial.Serial( 
-            port = str(((re.findall("\-p=\S*",args))[0])[3::]),
-            baudrate = int(((re.findall("\-r=\S*",args))[0])[3::]),
+            port = str(((re.findall("\-p=\S+",args))[0])[3::]),
+            baudrate = int(((re.findall("\-r=\S+",args))[0])[3::]),
             #bytesize = (re.findall("\-b=\S*", args)[0])[3::] if re.findall("\-b=\S*", args) else 8,
             #timeout = int((re.findall("\-t=\S*", args)[0])[3::]) if re.findall("\-t=\S*", args) else 1,
         )
     )
 
-    if re.findall("\s+\-l=\S*",args):
-        line_interface[(re.findall("\-i=\S*",args)[0])[3::]] = int((re.findall("\-l=\S*",args)[0])[3::])
+    if re.findall("\s+\-l=\S+",args):
+        line_interface[(re.findall("\-i=\S+",args)[0])[3::]] = int((re.findall("\-l=\S+",args)[0])[3::])
     
     #print((re.findall("\-i=\S*",args))[3::]) #debug
-    all_interfaces[(re.findall("\-i=\S*",args)[0])[3::]] = all_ports[-1] #append interfaces list with interface name and assigned serial port
+    all_interfaces[(re.findall("\-i=\S+",args)[0])[3::]] = all_ports[-1] #append interfaces list with interface name and assigned serial port
     
 
 def load(args): #NOT FINISHED
@@ -93,9 +97,9 @@ def load(args): #NOT FINISHED
 
 
 def set_port(args):
-    if re.findall("\-i=\S*",args):
-       all_interfaces["myPort"] = all_interfaces[ ((re.findall("\-i=\S*",args))[0])[3::] ]
-       line_interface["myPort"] = line_interface[ ((re.findall("\-i=\S*",args))[0])[3::] ]
+    if re.findall("\-i=\S+",args):
+       all_interfaces["myPort"] = all_interfaces[ ((re.findall("\-i=\S+",args))[0])[3::] ]
+       line_interface["myPort"] = line_interface[ ((re.findall("\-i=\S+",args))[0])[3::] ]
     else:
         raise Exception("No port or inteface was given. Please name a Serial connection to set as default")
 
@@ -130,15 +134,15 @@ def get_data(args):
         decoded_list.clear()
         lines = 0
 
-        if re.findall("\-i=\S*",args):
-            tempport = all_interfaces[ (re.findall("\-i=\S*",args)[0])[3::] ]
-            lines = line_interface[ (re.findall("\-i=\S*",args)[0])[3::] ]
+        if re.findall("\-i=\S+",args):
+            tempport = all_interfaces[ (re.findall("\-i=\S+",args)[0])[3::] ]
+            lines = line_interface[ (re.findall("\-i=\S+",args)[0])[3::] ]
         else:
             tempport = all_interfaces["myPort"]
             lines = line_interface["myPort"]
 
-        if re.findall("\-l=\S*",args):
-            lines = int(((re.findall("\-l=\S*",args))[0])[3::])
+        if re.findall("\-l=\S+",args):
+            lines = int(((re.findall("\-l=\S+",args))[0])[3::])
 
         print(lines)
 
