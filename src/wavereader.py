@@ -9,6 +9,8 @@ import serial.tools.list_ports as port_list
 import time
 import csv
 import json
+import matplotlib
+
 
 #---------------------------------------------------GLOBAL VARIABLES---------------------------------------------------#
 
@@ -69,7 +71,7 @@ def help(args):
             print("no man pages available yet") #print man page of command
     
 
-    #---------------------------------------------------SERIAL CONTROL---------------------------------------------------#
+#---------------------------------------------------SERIAL CONTROL---------------------------------------------------#
 
 def _init(args):
     #template
@@ -127,6 +129,7 @@ def show_ports(args):
     if re.findall("\-m",args):
         print(all_interfaces["myPort"])
 
+#---------------------------------------------------SERIAL COMMUNICATION---------------------------------------------------#
 
 def get_data(args):
         #print("Waiting for data")
@@ -144,7 +147,7 @@ def get_data(args):
         if re.findall("\-l=\S+",args):
             lines = int(((re.findall("\-l=\S+",args))[0])[3::])
 
-        print("Reading " + str(lines) + "lines")
+        print("Waiting to read " + str(lines) + " lines!")
 
         for i in range(lines):
             _data = tempport.readline()
@@ -156,13 +159,18 @@ def get_data(args):
             #print(decoded_data)
             
         #print(decoded_list)
-    
+
+#---------------------------------------------------DATA COMMANDS---------------------------------------------------#    
 
 def save_data(args=None):
         with open("savedata\\DSO138_data_" + str(time.time()) + ".csv","a") as target_file:
             for line in decoded_list:
-                writer = csv.writer(target_file,delimiter=' ')
+                writer = csv.writer(target_file,delimiter=' ',doublequote= '|',quotechar='"',lineterminator=' ',skipinitialspace = True)
                 writer.writerow(line)
+
+
+def plot_data(args=None):
+
         
 #---------------------------------------------------COMMANDS_DICTIONARY---------------------------------------------------#
 
