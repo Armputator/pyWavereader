@@ -32,12 +32,12 @@ decoded_list = list() #list for saving serial data
 base_cmnds = dict()
 
 def input_interpreter(input):
-    cmdlist = re.findall("\s+\-\S+", input) ##separates command from options, treats multiple whitespaces as one#if a option argument and its equal sign is separated from otion letter by whitespaces it will be misinterpreted
+    cmdlist = re.split("\s+\-", input) ##separates command from options, treats multiple whitespaces as one#if a option argument and its equal sign is separated from otion letter by whitespaces it will be misinterpreted
     options = str()
     #print("dissected input= ") #debug
     #print(cmdlist) #debug
     for c in cmdlist[1::]:
-        options += c + ' '
+        options += '-' + c + ' '
     #print("extracted options= " + options) #debug
 
     for c in cmdlist:
