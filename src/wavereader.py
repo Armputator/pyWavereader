@@ -162,7 +162,7 @@ def save_data(args=None):
         
 #---------------------------------------------------COMMANDS_DICTIONARY---------------------------------------------------#
 
-cmnd_interpreter = {
+cmnd_dict = {
     'exit' : exit,
     'help' : help,
     'init' : _init, 
@@ -174,7 +174,7 @@ cmnd_interpreter = {
     'save_data' : save_data,
     }
 
-base_cmnds = cmnd_interpreter
+base_cmnds = cmnd_dict
 #---------------------------------------------------RUNTIME---------------------------------------------------#
 
 if False:
