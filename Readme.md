@@ -162,6 +162,18 @@ Takes no arguments
 EXAMPLES
 : `save_data`
 ---
+*plot_data - plots data from csv file as simple matplot*
+
+SYNOPSIS
+: plot_data [OPTIONS]
+
+DESCRIPTION
+: reads csv file and plot data. If no file name is given, loads last created csv file or abort if no file has been created yet
+
+EXAMPLES:
+: `plot_data -f=data//myfile.csv`
+
+---
 ---
 ## **Installation**
 Python version 3.7.6 or higher is required

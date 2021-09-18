@@ -14,16 +14,18 @@ import matplotlib
 
 #---------------------------------------------------GLOBAL VARIABLES---------------------------------------------------#
 
-myPort = serial.Serial() #empty default port
-all_ports = list()  #List of all ports
-all_interfaces = {"myPort" : myPort} #Dictionary connecting Interface names as String to respective entry in all_ports
-line_interface = {"myPort" : 1}
+myPort = serial.Serial()    #empty default port
+all_ports = list()      #List of all ports
+all_interfaces = {"myPort" : myPort}    #Dictionary connecting Interface names as String to respective entry in all_ports
+line_interface = {"myPort" : 1} #Dictionary connecting Interface names to line counts
 
-min_lines = 1 #default amount of minimum lines
-startup = False #variable for runtime starting process
+min_lines = 1   #default amount of minimum lines
+startup = False     #variable for runtime starting process
 
-raw_list = list() #lsit for saving raw serial data
-decoded_list = list() #list for saving serial data
+raw_list = list()   #list for saving raw serial data
+decoded_list = list()   #list for saving serial data
+
+last_file = None    #last file which was created
 
 #---------------------------------------------------CLASSES---------------------------------------------------#
 
@@ -132,46 +134,66 @@ def show_ports(args):
 #---------------------------------------------------SERIAL COMMUNICATION---------------------------------------------------#
 
 def get_data(args):
-        #print("Waiting for data")
-        raw_list.clear()
-        decoded_list.clear()
-        lines = 0
+    #print("Waiting for data")
+    raw_list.clear()
+    decoded_list.clear()
+    lines = 0
 
-        if re.findall("\-i=\S+",args):
-            tempport = all_interfaces[ (re.findall("\-i=\S+",args)[0])[3::] ]
-            lines = line_interface[ (re.findall("\-i=\S+",args)[0])[3::] ]
-        else:
-            tempport = all_interfaces["myPort"]
-            lines = line_interface["myPort"]
+    if re.findall("\-i=\S+",args):
+        tempport = all_interfaces[ (re.findall("\-i=\S+",args)[0])[3::] ]
+        lines = line_interface[ (re.findall("\-i=\S+",args)[0])[3::] ]
+    else:
+        tempport = all_interfaces["myPort"]
+        lines = line_interface["myPort"]
 
-        if re.findall("\-l=\S+",args):
-            lines = int(((re.findall("\-l=\S+",args))[0])[3::])
+    if re.findall("\-l=\S+",args):
+        lines = int(((re.findall("\-l=\S+",args))[0])[3::])
 
-        print("Waiting to read " + str(lines) + " lines!")
+    print("Waiting to read " + str(lines) + " lines!")
 
-        for i in range(lines):
-            _data = tempport.readline()
-            raw_list.append(_data)
+    for i in range(lines):
+        _data = tempport.readline()
+        raw_list.append(_data)
 
-        for i in raw_list:
-            decoded_data = i.decode("Ascii")
-            decoded_list.append(decoded_data)
-            #print(decoded_data)
+    for i in raw_list:
+        decoded_data = i.decode("Ascii")
+        decoded_list.append(decoded_data)
+        #print(decoded_data)
             
-        #print(decoded_list)
+    #print(decoded_list)
 
 #---------------------------------------------------DATA COMMANDS---------------------------------------------------#    
 
 def save_data(args=None):
-        with open("savedata\\DSO138_data_" + str(time.time()) + ".csv","a") as target_file:
+        last_file = "savedata\\DSO138_data_" + str(time.time()) + ".csv"
+        with open(last_file,"a") as target_file:
             for line in decoded_list:
                 writer = csv.writer(target_file,delimiter=' ',doublequote= '|',quotechar='"',lineterminator=' ',skipinitialspace = True)
                 writer.writerow(line)
 
 
 def plot_data(args=None):
+    try:
+        if re.findall("\-f=\S+", args):
+            with open((re.findall("\-f=\S+", args)[0])[3::],"r") as data_file:
+                data = csv.reader(data_file,delimiter=' ',doublequote= '|',quotechar='"',lineterminator=' ',skipinitialspace = True)
+                for row in data:
+                    print("".join(row))
 
+        elif last_file is not None:
+            with open(last_file,"r") as data_file:
+                data = csv.reader(data_file,delimiter=' ',doublequote= '|',quotechar='"',lineterminator=' ',skipinitialspace = True)
+                for row in data:
+                    print("".join(row))
         
+        else:
+            print("No file was previously created")
+            return
+    
+    except:
+        print("Error ocurred trying to open a data file with following arguments:\n->" + args + "<-")
+        
+
 #---------------------------------------------------COMMANDS_DICTIONARY---------------------------------------------------#
 
 cmnd_dict = {
@@ -184,6 +206,7 @@ cmnd_dict = {
     'show_ports' : show_ports,
     'get_data' : get_data, 
     'save_data' : save_data,
+    'plot_data' : plot_data
     }
 
 base_cmnds = cmnd_dict
