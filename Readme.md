@@ -72,6 +72,7 @@ SYNOPSIS
 DESCRIPTION
 : initializes serial port with an interface name adressable by user
 adds entry for how many lines must be read when reading from this com port
+using interface name "myPort" will override the default interface already in the system (only lasts for current runtime)
 mandatory arguments are
 
 -i=[INTERFACE]
@@ -120,8 +121,8 @@ DESCRIPTION
 
 -p, shows all ports connected to system
 -i, shows all interfaces
--c, shows all initilized ports as saved in all_ports list
--m, shows current standard port
+-j, shows all initilized ports as saved in all_ports list
+-c, shows current standard port
 
 EXAMPLES
 : `show_ports -p `

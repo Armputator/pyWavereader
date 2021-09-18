@@ -124,11 +124,11 @@ def show_ports(args):
         for i in all_interfaces.keys():
             print( ("Open" if str((all_interfaces[i]).is_open) else "Closed") +  " >> " + str(i))
     
-    if re.findall("\-c",args):
+    if re.findall("\-j",args):
         for p in all_ports:
             print(p)
 
-    if re.findall("\-m",args):
+    if re.findall("\-c",args):
         print(all_interfaces["myPort"])
 
 #---------------------------------------------------SERIAL COMMUNICATION---------------------------------------------------#
@@ -157,8 +157,8 @@ def get_data(args):
 
     for i in raw_list:
         decoded_data = i.decode("Ascii")
-        decoded_list.append(decoded_data)
-        #print(decoded_data)
+        print(decoded_data[0:-1:])
+        decoded_list.append(decoded_data[0:-1:])
             
     #print(decoded_list)
 
@@ -168,8 +168,10 @@ def save_data(args=None):
         last_file = "savedata\\DSO138_data_" + str(time.time()) + ".csv"
         with open(last_file,"a") as target_file:
             for line in decoded_list:
-                writer = csv.writer(target_file,delimiter=' ',doublequote= '|',quotechar='"',lineterminator=' ',skipinitialspace = True)
-                writer.writerow(line)
+                #writer = csv.writer(target_file,delimiter=' ',doublequote= '|',quotechar='"',lineterminator=' ',skipinitialspace = True)
+                #writer.writerow(line)
+                #writer.writerow("".join(line))
+                target_file.write(line)
 
 
 def plot_data(args=None):
