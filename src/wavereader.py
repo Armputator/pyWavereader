@@ -36,7 +36,7 @@ last_file = None    #last file which was created
 base_cmnds = dict()
 
 def input_interpreter(input):
-    cmdlist = re.split("\s+\-", input) ##separates command from options, treats multiple whitespaces as one#if a option argument and its equal sign is separated from otion letter by whitespaces it will be misinterpreted
+    cmdlist = re.split("\s+\-", input) ##separates command from options, treats multiple whitespaces as one#if an option argument and its equal sign is separated from option letter by whitespaces it will be misinterpreted
     options = str()
     #print("dissected input= ") #debug
     #print(cmdlist) #debug
@@ -62,14 +62,17 @@ def leave(args=None):
             p.close()
     quit()
 
+def man(args):  #can be called manually, call via help is preferred
+    return manlib.print_man(args)
+
 
 def help(args):
     if re.findall("\-a",args):
         for b in base_cmnds.keys():
             print(b) #print from base_cmnds
+
     else:
-        for a in args[:-1:]:
-            print("no man pages available yet") #print man page of command
+        man(args) #print man page of command
     
 
 #---------------------------------------------------SERIAL CONTROL---------------------------------------------------#
@@ -204,7 +207,7 @@ cmnd_dict = {
     'help' : help,
     'init' : _init, 
     'load' : load,
-    'man' : manlib,
+    'man' : manlib.print_man,
     'plot_data' : plot_data,
     'set_port' : set_port,
     'show_ports' : show_ports,

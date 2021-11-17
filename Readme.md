@@ -55,12 +55,15 @@ SYNOPSIS
 : help [COMMAND]
 
 DESCRIPTION
-: prints the man page about the command(s) given as argument or if -a option is given prints all possible commands
-`-a`, prints all commands, function call ignores all other argument if this is given
+: prints the man page about the command given as argument, immediately preceded by a single dash 
+or if -a option is given prints all possible commands.
+Man pages are located in "pyWavereader/man".
+-a, prints all commands, function call ignores all other argument if this is given
+-COMMAND, prints man page for command
 
 EXAMPLES
-: `help -init`
- `help -a`, this call will ignore the -init argument
+: `help -init`, prints man page for init
+ `help -init -a`, this call will ignore the -init argument
 
 ### Serial Control
 
