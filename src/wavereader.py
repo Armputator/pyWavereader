@@ -10,7 +10,7 @@ import time
 import csv
 import json
 import matplotlib
-
+import man as manlib
 
 #---------------------------------------------------GLOBAL VARIABLES---------------------------------------------------#
 
@@ -55,7 +55,6 @@ def input_interpreter(input):
             return (base_cmnds[(cmdlist[0])])(options) #calls command and gives options as single string with each option seperated with one whitespace
         except:
             print("Command " + str(cmdlist[0]) + " could not be found")
-
 
 def leave(args=None):
     for p in all_ports:
@@ -199,16 +198,17 @@ def plot_data(args=None):
 #---------------------------------------------------COMMANDS_DICTIONARY---------------------------------------------------#
 
 cmnd_dict = {
+    'close' : close,
     'exit' : exit,
+    'get_data' : get_data, 
     'help' : help,
     'init' : _init, 
     'load' : load,
+    'man' : manlib,
+    'plot_data' : plot_data,
     'set_port' : set_port,
-    'close' : close,
     'show_ports' : show_ports,
-    'get_data' : get_data, 
     'save_data' : save_data,
-    'plot_data' : plot_data
     }
 
 base_cmnds = cmnd_dict
