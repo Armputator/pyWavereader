@@ -7,6 +7,7 @@ def print_man(args):
     for line in file.readlines:
         print(line)
 
+    file.close()
 
 def find_man(args):
     files = [f for f in os.listdir('../man') if os.path.isfile(f)]  # list all files in directory pyWavereader/man 
